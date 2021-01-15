@@ -1,33 +1,23 @@
 import React, { useEffect, useState }  from 'react';
 import SearchBar from './SearchBar';
-import youtube from '../apis/youtube';
+
 import VideoList from './VideoList';
 import VideoDetail from './VideoDetail';
-
+import useVideos from '../Hooks/useVideos'
 
 const App = () => {
-    const [videos,setVideos] = useState([]);
     const [selectedVideo,setSelectedVideo]=useState(null);
 
-    useEffect(()=> {
-        onTermSubmit('Rich Dad Poor Dad English');
-    },[]);
+   const [videos,search] = useVideos('Rich Dad Poor Dad English');  // custom hooks-useVideos
+  
 
-    const  onTermSubmit  = async term => {
-        const response = await  youtube.get('/search', {
-                  params: {
-                      q: term
-                  }
-              });
-
-              setVideos(response.data.items);
-              setSelectedVideo(response.data.items[0]);  
-          };
-
+    useEffect(()=>{
+    setSelectedVideo(videos[0]);            
+    },[videos]);
 
    return (
     <div className="ui container">
-      <SearchBar onFormSubmit={onTermSubmit} />
+      <SearchBar onFormSubmit={search} />
       {/* Number of videos is {this.state.videos.length} */}
         <div className="ui grid">
             <div className="ui row">
